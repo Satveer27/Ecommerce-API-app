@@ -2,6 +2,7 @@ import express from 'express';
 import dbConnect from '../config/dbConnect.js';
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import userRoutes from '../routes/usersRoute.js';
 import { globalErrorHandler , notFound} from '../middlewares/globalErrorHandler.js';
 import productRoutes from '../routes/productRoute.js';
@@ -20,6 +21,9 @@ dotenv.config();
 //Database connection
 dbConnect();
 const app = express();
+
+//cors
+app.use(cors());
 
 //stripe webhook
 //stripe instance
