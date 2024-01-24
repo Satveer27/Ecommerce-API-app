@@ -9,12 +9,13 @@ export const createBrandCtrl = asyncHandler(async(req,res)=>{
     const imageConverter = req.file.path;
     const{name} = req.body
     //check if brand exist
-    const brandFound = await Brand.findOne({name})
+    nameLower = name.toLowerCase()
+    const brandFound = await Brand.findOne({nameLower})
     if(brandFound){
         throw new Error("Brand exist already");
     }
     const newBrand = await Brand.create({
-        name: name.toLowerCase(),
+        name: nameLower,
         user: req.userAuthId,
         image: imageConverter,
     });

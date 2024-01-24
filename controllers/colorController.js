@@ -8,12 +8,13 @@ import asyncHandler from 'express-async-handler';
 export const createColorCtrl = asyncHandler(async(req,res)=>{
     const{name} = req.body
     //check if brand exist
-    const colorFound = await Color.findOne({name})
+    nameToLower = name.toLowerCase()
+    const colorFound = await Color.findOne({nameToLower})
     if(colorFound){
         throw new Error("color exist already");
     }
     const newColor = await Color.create({
-        name: name.toLowerCase(),
+        name: nameToLower,
         user: req.userAuthId,
     });
 
