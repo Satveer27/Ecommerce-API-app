@@ -18,9 +18,6 @@ const stripe = new Stripe(process.env.STRIPE_KEY);
 
 export const createOrderController = asyncHandler(async(req,res)=>{ 
 
-    //the order
-    let order = {};
-    
     //Get the payload(things we need for the order-customer, orderitems, shipping address, total price)
     const {orderItems, shippingAddress, totalPrice} = req.body;
     
@@ -38,12 +35,16 @@ export const createOrderController = asyncHandler(async(req,res)=>{
     };
 
     //get the coupon
-    const {coupon} = req.query;
+    const {coupon} = req?.query;
+    let couponFound;
+    let discount;
+
     
     if(coupon){
-         const couponFound = await Coupon.findOne({
+         couponFound = await Coupon.findOne({
              code: coupon?.toUpperCase(),
          })
+         console.log(couponFound)
          if(couponFound?.isExpired){
              throw new Error("Coupon has expired");
          }
@@ -52,28 +53,20 @@ export const createOrderController = asyncHandler(async(req,res)=>{
          }
  
          //get the discount
-         const discount = couponFound?.discount / 100 ; 
-
-          //Place the order - save to db
-         order = await Order.create({
-                user: req.userAuthId,
-                orderItems,
-                shippingAddress,
-                totalPrice: couponFound ? totalPrice - totalPrice * discount: totalPrice,
-         })
-
+         discount = couponFound?.discount / 100 ; 
     }
-    else{
-        //Place the order - save to db
-        order = await Order.create({
+
+   
+    //Place the order - save to db
+    const order = await Order.create({
             user: req.userAuthId,
             orderItems,
             shippingAddress,
-            totalPrice,
-        })
-    }
+            totalPrice: couponFound ? totalPrice - totalPrice * discount: totalPrice,
+    })
 
-    
+    console.log(order)
+
     //push order into user
     user.orders.push(order?._id);
     await user.save();
@@ -87,8 +80,8 @@ export const createOrderController = asyncHandler(async(req,res)=>{
         })
         if(product){
             product.totalSold += order.totalQtyBuying;
+            await product.save();
         }
-        await product.save();
     })
 
     //make payment(stripe)
@@ -101,7 +94,7 @@ export const createOrderController = asyncHandler(async(req,res)=>{
                     name: item?.name,
                     description: item?.description,
                 },
-                unit_amount:item?.price * 100,
+                unit_amount: discount ? (item?.price- (item?.price * discount)) * 100 : item?.price * 100,
             },
             quantity: item?.totalQtyBuying,
         }
