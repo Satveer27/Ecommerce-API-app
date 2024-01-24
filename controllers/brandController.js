@@ -7,15 +7,14 @@ import asyncHandler from 'express-async-handler';
 
 export const createBrandCtrl = asyncHandler(async(req,res)=>{
     const imageConverter = req.file.path;
-    const{name} = req.body
-    //check if brand exist
-    nameLower = name.toLowerCase()
-    const brandFound = await Brand.findOne({nameLower})
+    const {name} = req.body
+    
+    const brandFound = await Brand.findOne({name})
     if(brandFound){
         throw new Error("Brand exist already");
     }
     const newBrand = await Brand.create({
-        name: nameLower,
+        name: name,
         user: req.userAuthId,
         image: imageConverter,
     });
