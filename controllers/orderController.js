@@ -35,26 +35,26 @@ export const createOrderController = asyncHandler(async(req,res)=>{
     };
 
     //get the coupon
-    const {coupon} = req?.query;
-    let couponFound;
-    let discount;
+    //const {coupon} = req?.query;
+    //let couponFound;
+    //let discount;
 
     
-    if(coupon){
-         couponFound = await Coupon.findOne({
-             code: coupon?.toUpperCase(),
-         })
-         console.log(couponFound)
-         if(couponFound?.isExpired){
-             throw new Error("Coupon has expired");
-         }
-         if(!couponFound){
-             throw new Error("Coupon doesnt exist")
-         }
+    //if(coupon){
+    //     couponFound = await Coupon.findOne({
+    //        code: coupon?.toUpperCase(),
+    //     })
+    //     console.log(couponFound)
+    //     if(couponFound?.isExpired){
+    //         throw new Error("Coupon has expired");
+    //     }
+    //     if(!couponFound){
+    //         throw new Error("Coupon doesnt exist")
+    //     }
  
          //get the discount
-         discount = couponFound?.discount / 100 ; 
-    }
+    //     discount = couponFound?.discount / 100 ; 
+    //}
 
    
     //Place the order - save to db
@@ -62,10 +62,8 @@ export const createOrderController = asyncHandler(async(req,res)=>{
             user: req.userAuthId,
             orderItems,
             shippingAddress,
-            totalPrice: couponFound ? totalPrice - totalPrice * discount: totalPrice,
+            totalPrice,
     })
-
-    console.log(order)
 
     //push order into user
     user.orders.push(order?._id);
@@ -94,7 +92,7 @@ export const createOrderController = asyncHandler(async(req,res)=>{
                     name: item?.name,
                     description: item?.description,
                 },
-                unit_amount: discount ? (item?.price- (item?.price * discount)) * 100 : item?.price * 100,
+                unit_amount: item?.price * 100,
             },
             quantity: item?.totalQtyBuying,
         }
