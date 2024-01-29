@@ -53,7 +53,7 @@ export const getAllCouponsController = asyncHandler(async(req,res)=>{
 //@access       Private/Admin
 
 export const getSingleCouponsController = asyncHandler(async(req,res)=>{ 
-    const coupons = await Coupon.findOne({code: req.body.code});
+    const coupons = await Coupon.findOne({code: req.query.code});
 
     //check if it isnt found
     if (coupons === null){
