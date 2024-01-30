@@ -8,6 +8,6 @@ const userRoutes = express.Router();
 userRoutes.post('/register', registerUserController);
 userRoutes.post('/login', loginUserController);
 userRoutes.get('/profile', isLoggedIn , getUserProfileController);
-userRoutes.post('/updateShipping', isLoggedIn, updateShippingAddressController);
+userRoutes.put('/updateShipping', isLoggedIn, updateShippingAddressController);
 
 export default userRoutes;
