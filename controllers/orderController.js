@@ -104,8 +104,8 @@ export const createOrderController = asyncHandler(async(req,res)=>{
             orderId: JSON.stringify(order?._id),
         }, 
         mode: "payment",
-        success_url:"https://localhost:3000/success",
-        cancel_url:"https://localhost:3000/cancel",
+        success_url:"http://localhost:3000/success",
+        cancel_url:"http://localhost:3000/cancel",
     });
     res.send({url: session.url })
     //Payment webhook
