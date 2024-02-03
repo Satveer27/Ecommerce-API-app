@@ -192,8 +192,18 @@ export const updateProductController = asyncHandler(async(req, res)=>{
         name,
     })
 
+    const currentProduct = await Product.findById(
+        req.params.id,
+    )
+    console.log(currentProduct)
+    console.log(productExist)
+    console.log('hello')
+
     if(productExist){
-        throw new Error("Product already exist");
+        console.log(productExist?.name)
+        console.log(currentProduct?.name)
+        if(productExist?.name != currentProduct?.name){
+            throw new Error("Product already exist");}
     }
 
     //update
@@ -215,6 +225,7 @@ export const updateProductController = asyncHandler(async(req, res)=>{
         status:"success",
         message: "product updated",
         product,
+        
     });
 })
 
