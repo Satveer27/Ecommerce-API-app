@@ -217,6 +217,7 @@ export const updateProductController = asyncHandler(async(req, res)=>{
             price,
             images:imageConverter,
             totalQuantity,
+            qtyLeft: totalQuantity, 
     },{
         new: true,
         runValidators: true, 
