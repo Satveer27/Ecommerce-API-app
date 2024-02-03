@@ -161,7 +161,13 @@ export const fetchProductController = asyncHandler(async(req,res)=>{
 
 export const getSingleProductController = asyncHandler(async(req, res)=>{
     //populate basically gets the object itself instead of the id
-    const product = await Product.findById(req.params.id).populate("reviews");
+    const product = await Product.findById(req.params.id).populate({
+        path: 'reviews',
+        populate:{
+            path:'user',
+            select: 'username',
+        }
+    });
     if(!product){
         throw new Error('Product not found')
     }
