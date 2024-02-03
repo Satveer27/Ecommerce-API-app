@@ -121,7 +121,7 @@ export const createOrderController = asyncHandler(async(req,res)=>{
 
 export const getAllOrderController = asyncHandler(async(req,res)=>{
 //find all orders
-const order = await Order.find();
+const order = await Order.find().populate("user");
 res.json({
     success:true,
     message: "All order",
