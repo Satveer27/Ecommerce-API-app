@@ -219,6 +219,7 @@ export const updateProductController = asyncHandler(async(req, res)=>{
             totalQuantity,
     },{
         new: true,
+        runValidators: true, 
     });
 
     res.json({
