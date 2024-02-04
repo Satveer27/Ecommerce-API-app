@@ -101,7 +101,7 @@ export const updateCouponsController = asyncHandler(async(req,res)=>{
     if(couponExist){
        
         if(couponExist?.code != currentCouponExist?.code){
-            throw new Error("Product already exist");}
+            throw new Error("category already exist");}
     }
     
     const coupons = await Coupon.findByIdAndUpdate(req.params.id, {

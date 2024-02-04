@@ -72,7 +72,7 @@ export const updateCategoryController = asyncHandler(async(req, res)=>{
     if(categoryExist){
        
         if(categoryExist?.name != currentCategoryExist?.name){
-            throw new Error("Product already exist");}
+            throw new Error("category already exist");}
     }
     
 
