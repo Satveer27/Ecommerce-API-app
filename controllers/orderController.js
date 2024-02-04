@@ -97,6 +97,7 @@ export const createOrderController = asyncHandler(async(req,res)=>{
             quantity: item?.totalQtyBuying,
         }
     })
+    
     const session = await stripe.checkout.sessions.create({
         //order user pay for
         line_items: convertedOrders,
@@ -109,7 +110,7 @@ export const createOrderController = asyncHandler(async(req,res)=>{
     });
     res.send({url: session.url })
     //Payment webhook
-
+    
 
     //Update user order
     

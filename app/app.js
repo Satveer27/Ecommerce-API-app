@@ -39,7 +39,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), async(request, res
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
     
   } catch (err) {
     response.status(400).send(`Webhook Error: ${err.message}`);
@@ -51,6 +51,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), async(request, res
     //update order
     const session = event.data.object;
     console.log(session);
+    console.log('hello world');
     const {orderId} = session.metadata;
     const paymentStatus = session.payment_status;
     const paymentMethod = session.payment_method_types[0];
@@ -68,8 +69,10 @@ app.post('/webhook', express.raw({type: 'application/json'}), async(request, res
     });
 
     console.log(order);
+    console.log(paymentStatus);
   }
   else{
+    console.log(event.type)
     return;
   }
 
