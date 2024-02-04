@@ -69,19 +69,6 @@ export const createOrderController = asyncHandler(async(req,res)=>{
     user.orders.push(order?._id);
     await user.save();
 
-    //update product quantity
-    const products = await Product.find({_id:{$in:orderItems}}) 
-    
-    orderItems?.map(async (order)=>{
-        const product = products?.find((product)=>{
-            return product?._id.toString() === order?._id.toString();
-        })
-        if(product){
-            product.totalSold += order.totalQtyBuying;
-            await product.save();
-        }
-    })
-
     //make payment(stripe)
     //convert order items to have same structure as stripe need
     const convertedOrders = orderItems.map((item)=>{

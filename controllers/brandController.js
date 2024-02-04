@@ -44,7 +44,9 @@ export const getAllBrandController = asyncHandler(async(req,res)=>{
 //@access       Public
 
 export const getSingleBrandController = asyncHandler(async(req,res)=>{
+    console.log(req.params.id)
     const brand = await Brand.findById(req.params.id);
+    console.log(brand)
     res.json({
         status:"success",
         msg:"Brand fetched succesfully",

@@ -14,7 +14,7 @@ import orderRouter from '../routes/orderRouter.js';
 import Order from '../model/Order.js';
 import couponRouter from '../routes/couponRoute.js';
 import path from 'path';
-
+import Product from '../model/Product.js';
 //Have access to variable in env file
 dotenv.config();
 
@@ -59,13 +59,32 @@ app.post('/webhook', express.raw({type: 'application/json'}), async(request, res
     
     //update order
     const session = event.data.object;
-    console.log(session);
-    console.log('hello world');
     const {orderId} = session.metadata;
     const paymentStatus = session.payment_status;
     const paymentMethod = session.payment_method_types[0];
     const totalAmount = session.amount_total;
     const currency = session.currency;
+
+    //get the actual order items again and update stock
+    console.log(JSON.parse(orderId))
+    const orderItemsQuery  = Order.findById(JSON.parse(orderId));
+    const orderItems = await orderItemsQuery.exec();
+    
+    
+    //update product quantity
+    const products = await Product.find({_id:{$in:orderItems?.orderItems}}) 
+
+    orderItems?.orderItems?.map(async(order)=>{
+      const product = products?.find((product)=>{
+          return product?._id.toString() === order?._id.toString();
+      })
+      
+      if(product){
+         product.totalSold += Number(order.totalQtyBuying);
+          console.log(product.totalSold)
+          await product.save();
+      }
+    })
 
     //find the order
     const order = await Order.findByIdAndUpdate(JSON.parse(orderId), {
@@ -76,8 +95,6 @@ app.post('/webhook', express.raw({type: 'application/json'}), async(request, res
     }, {
       new:true,
     });
-
-    console.log(order);
     console.log(paymentStatus);
   }
   else{
