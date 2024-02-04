@@ -49,7 +49,10 @@ export const loginUserController = asyncHandler(async(req, res)=>{
         res.json({
             status:'success',
             msg:'Success login',
-            userFound,
+            userFound:{
+                username: userFound?.username,
+                isAdmin: userFound?.isAdmin, 
+            },
             token: generateToken(userFound.id)
         });
     }
