@@ -65,8 +65,13 @@ export const updateBrandController = asyncHandler(async(req, res)=>{
         name,
     })
 
+    //check if name exist
+    const currentBrandExist = await Brand.findById(req.params.id)
+
     if(brandExists){
-        throw new Error("Brand already exist");
+       
+        if(brandExists?.name != currentBrandExist?.name){
+            throw new Error("Product already exist");}
     }
 
     //update

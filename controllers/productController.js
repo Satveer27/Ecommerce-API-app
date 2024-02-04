@@ -195,10 +195,7 @@ export const updateProductController = asyncHandler(async(req, res)=>{
     const currentProduct = await Product.findById(
         req.params.id,
     )
-    console.log(currentProduct)
-    console.log(productExist)
-    console.log('hello')
-
+  
     if(productExist){
         console.log(productExist?.name)
         console.log(currentProduct?.name)

@@ -61,13 +61,20 @@ export const updateCategoryController = asyncHandler(async(req, res)=>{
     const {name} = req.body;
 
     //check if name exist
+    
+    //check if name exist
     const categoryExist = await Category.findOne({
         name,
     })
 
+    const currentCategoryExist = await Category.findById(req.params.id)
+  
     if(categoryExist){
-        throw new Error("Category already exist");
+       
+        if(categoryExist?.name != currentCategoryExist?.name){
+            throw new Error("Product already exist");}
     }
+    
 
     //update
     const category = await Category.findByIdAndUpdate(req.params.id,{
