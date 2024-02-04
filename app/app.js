@@ -29,6 +29,15 @@ app.use(cors());
 //stripe instance
 const stripe = new Stripe(process.env.STRIPE_KEY);
 
+//parse data
+app.use((req, res, next) => {
+  if (req.originalUrl === '/webhook') {
+    next(); // Do nothing with the body because I need it in a raw state.
+  } else {
+    express.json()(req, res, next);  // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
+  }
+});
+
 
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 const endpointSecret = process.env.STRIPE_CLI_SECRET;
@@ -39,7 +48,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), async(request, res
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(request.rawBody, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     
   } catch (err) {
     response.status(400).send(`Webhook Error: ${err.message}`);
@@ -79,9 +88,6 @@ app.post('/webhook', express.raw({type: 'application/json'}), async(request, res
   // Return a 200 response to acknowledge receipt of the event
   response.send();
 });
-
-//pass incoming data
-app.use(express.json());
 
 //server static files
 app.use(express.static('public'))

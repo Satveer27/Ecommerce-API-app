@@ -109,10 +109,6 @@ export const createOrderController = asyncHandler(async(req,res)=>{
         cancel_url:"https://woodencloud.netlify.app/cancel",
     });
     res.send({url: session.url })
-    //Payment webhook
-    
-
-    //Update user order
     
 });
 
